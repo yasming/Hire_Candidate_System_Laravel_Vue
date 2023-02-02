@@ -39,4 +39,4 @@ _**This app was created only for the purpose of the test assignment and code qua
 
 ## Get started
 
-Use this repository as your starting point, but **DO NOT** fork it. Create a private repository on GitHub for your application source code, push it, give access to @siljanoskam to it and send the link to us.
+Use this repository as your starting point, but **DO NOT** fork it. Create a private repository on GitHub for your application source code, push it, give access to **@siljanoskam** to it and send the link to us.
