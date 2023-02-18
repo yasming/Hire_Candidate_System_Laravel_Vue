@@ -6,6 +6,7 @@ use App\Mail\Candidate\ContactCandidateMail;
 use App\Mail\Candidate\CandidateHireMail;
 use App\Models\Candidate;
 use App\Models\Company;
+use App\Models\CompanyCandidateContact;
 use App\Models\CompanyCandidateHire;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
@@ -73,6 +74,7 @@ class CandidateControllerTest extends TestCase
         });
         $this->company->refresh();
         $this->assertEquals($this->companyCoins - 5, $this->company->coins);
+        $this->assertEquals(1, CompanyCandidateContact::count());
         $this->assertEquals(['message' => 'Email contact will be send to the candidate'], $response->json());
     }
 
@@ -103,10 +105,16 @@ class CandidateControllerTest extends TestCase
             ->assertSessionHasErrors(['companyId' => 'The selected company id is invalid.']);
     }
 
+    public function test_should_validate_company_contact_with_candidate_before_hire_on_candidates_hire_endpoint()
+    {
+        $this->post('/candidates-hire', ['companyId' => $this->company->id, 'candidateId' => $this->candidate->id])->assertStatus(302)
+            ->assertSessionHasErrors(['companyId' => 'To hire this candidate you need to contact him before.']);
+    }
 
     public function test_should_successfully_send_a_hire_email_to_candidate_increment_company_wallet_and_mark_candidate_as_hired_on_candidates_hire_endpoint()
     {
         Mail::fake();
+        CompanyCandidateContact::query()->create(['company_id' => $this->company->id, 'candidate_id' => $this->candidate->id]);
         $response = $this->post('/candidates-hire', ['companyId' => $this->company->id, 'candidateId' => $this->candidate->id])
             ->assertStatus(200);
 

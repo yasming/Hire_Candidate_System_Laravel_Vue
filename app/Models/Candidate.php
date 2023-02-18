@@ -21,10 +21,17 @@ class Candidate extends Model
         return $this->hasMany(CompanyCandidateHire::class);
     }
 
+    public function companiesCandidateContacts(): HasMany
+    {
+        return $this->hasMany(CompanyCandidateContact::class);
+    }
+
     public static function getNotHiredCandidatesForSpecificCompany(int $companyId): Collection
     {
         return self::query()->whereDoesntHave('companiesCandidateHires', function ($query) use ($companyId) {
             return $query->where('company_id', $companyId);
-        })->get();
+        })->withCount(['companiesCandidateContacts as canHire' => function ($query) use ($companyId) {
+            $query->where('company_id', $companyId);
+        }])->get();
     }
 }

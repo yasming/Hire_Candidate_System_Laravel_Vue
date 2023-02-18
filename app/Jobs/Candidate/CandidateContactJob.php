@@ -5,6 +5,7 @@ namespace App\Jobs\Candidate;
 use App\Mail\Candidate\ContactCandidateMail;
 use App\Models\Candidate;
 use App\Models\Company;
+use App\Models\CompanyCandidateContact;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -38,6 +39,7 @@ class CandidateContactJob implements ShouldQueue
                 throw new \Exception('Company does not have enough coins');
             }
             Mail::to($this->candidate->email)->send(new ContactCandidateMail(candidateName: $this->candidate->name, companyName: $this->company->name));
+            CompanyCandidateContact::query()->create(['company_id' => $this->company->id, 'candidate_id' => $this->candidate->id]);
             $this->company->wallet->decrement('coins', 5);
         } catch (\Exception $e) {
             Log::info('Send email job failed: '. $e->getMessage());

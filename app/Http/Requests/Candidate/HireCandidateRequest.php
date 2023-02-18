@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Candidate;
 
+use App\Rules\Company\ValidateCompanyAlreadyContactCandidateBeforeRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class HireCandidateRequest extends FormRequest
@@ -15,7 +16,7 @@ class HireCandidateRequest extends FormRequest
     {
         return [
             'candidateId' => 'bail|required|exists:candidates,id',
-            'companyId' => 'bail|required|exists:companies,id'
+            'companyId' => ['bail','required','exists:companies,id', new ValidateCompanyAlreadyContactCandidateBeforeRule($this->get('candidateId'))]
         ];
     }
 }
