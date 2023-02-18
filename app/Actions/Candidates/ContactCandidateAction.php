@@ -2,10 +2,9 @@
 
 namespace App\Actions\Candidates;
 
-use App\Mail\Candidate\ContactCandidateMail;
+use App\Jobs\Candidate\SendCandidateContactJob;
 use App\Models\Candidate;
 use App\Models\Company;
-use Illuminate\Support\Facades\Mail;
 
 class ContactCandidateAction
 {
@@ -14,7 +13,6 @@ class ContactCandidateAction
     {
         $candidate = Candidate::query()->find($candidateId);
         $company = Company::query()->find($companyId);
-        Mail::to($candidate->email)->queue(new ContactCandidateMail(candidateName: $candidate->name, companyName: $company->name));
-        $company->wallet->decrement('coins', 5);
+        SendCandidateContactJob::dispatch($candidate, $company);
     }
 }

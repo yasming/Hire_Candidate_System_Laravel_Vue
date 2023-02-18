@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Candidate;
 
+use App\Rules\Company\ValidateCompanyCoinsRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ContactCandidateRequest extends FormRequest
@@ -14,8 +15,8 @@ class ContactCandidateRequest extends FormRequest
     public function rules()
     {
         return [
-            'candidateId' => 'required|exists:candidates,id',
-            'companyId' => 'required|exists:companies,id'
+            'candidateId' => 'bail|required|exists:candidates,id',
+            'companyId' => ['bail','required','exists:companies,id', new ValidateCompanyCoinsRule()]
         ];
     }
 }
