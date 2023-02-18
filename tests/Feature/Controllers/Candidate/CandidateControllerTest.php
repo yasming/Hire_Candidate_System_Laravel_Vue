@@ -3,8 +3,10 @@
 namespace Tests\Feature\Controllers\Candidate;
 
 use App\Mail\Candidate\ContactCandidateMail;
+use App\Mail\Candidate\CandidateHireMail;
 use App\Models\Candidate;
 use App\Models\Company;
+use App\Models\CompanyCandidateHire;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
@@ -71,6 +73,55 @@ class CandidateControllerTest extends TestCase
         });
         $this->company->refresh();
         $this->assertEquals($this->companyCoins - 5, $this->company->coins);
-        $this->assertEquals(['message' => 'Email contact will be sent to the candidate'], $response->json());
+        $this->assertEquals(['message' => 'Email contact will be send to the candidate'], $response->json());
+    }
+
+    // -----------
+
+    public function test_should_validate_candidate_id_required_on_candidates_hire_endpoint()
+    {
+        $this->post('/candidates-hire', [])->assertStatus(302)
+            ->assertSessionHasErrors(['candidateId' => 'The candidate id field is required.']);
+    }
+
+    public function test_should_validate_candidate_id_exists_on_candidates_hire_endpoint()
+    {
+        $this->post('/candidates-hire', ['candidateId' => 0])->assertStatus(302)
+            ->assertSessionHasErrors(['candidateId' => 'The selected candidate id is invalid.']);
+    }
+
+
+    public function test_should_validate_company_id_required_on_candidates_hire_endpoint()
+    {
+        $this->post('/candidates-hire', [])->assertStatus(302)
+            ->assertSessionHasErrors(['companyId' => 'The company id field is required.']);
+    }
+
+    public function test_should_validate_company_id_exists_on_candidates_hire_endpoint()
+    {
+        $this->post('/candidates-hire', ['companyId' => 0])->assertStatus(302)
+            ->assertSessionHasErrors(['companyId' => 'The selected company id is invalid.']);
+    }
+
+
+    public function test_should_successfully_send_a_hire_email_to_candidate_increment_company_wallet_and_mark_candidate_as_hired_on_candidates_hire_endpoint()
+    {
+        Mail::fake();
+        $response = $this->post('/candidates-hire', ['companyId' => $this->company->id, 'candidateId' => $this->candidate->id])
+            ->assertStatus(200);
+
+        Mail::assertSent(CandidateHireMail::class, function ($mail) {
+            $mail->build();
+            $this->assertEquals($this->company->name, $mail->companyName);
+            $this->assertEquals($this->candidate->name, $mail->candidateName);
+            $this->assertTrue($mail->hasTo($this->candidate->email));
+            return $mail->subject === 'You are hired !!';
+        });
+
+        $this->company->refresh();
+        $this->assertEquals($this->companyCoins + 5, $this->company->coins);
+        $this->assertEquals(1, CompanyCandidateHire::count());
+        $this->assertequals(true, $this->candidate->isHiredBySpecificCompany($this->company->id));
+        $this->assertEquals(['message' => 'Hire email will be send to the candidate'], $response->json());
     }
 }

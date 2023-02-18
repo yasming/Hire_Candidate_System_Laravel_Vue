@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Company\Jobs;
 
-use App\Jobs\Candidate\SendCandidateContactJob;
+use App\Jobs\Candidate\CandidateContactJob;
 use App\Mail\Candidate\ContactCandidateMail;
 use App\Models\Candidate;
 use App\Models\Company;
@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
-class SendCandidateContactJobTest extends TestCase
+class CandidateContactJobTest extends TestCase
 {
     public function setUp(): void
     {
@@ -24,7 +24,7 @@ class SendCandidateContactJobTest extends TestCase
     {
         Mail::fake();
         $this->company->wallet->update(['coins' => 2]);
-        $job = new SendCandidateContactJob($this->candidate, $this->company);
+        $job = new CandidateContactJob($this->candidate, $this->company);
         $job->handle();
         Mail::assertNotSent(ContactCandidateMail::class);
         $this->company->refresh();
@@ -34,8 +34,8 @@ class SendCandidateContactJobTest extends TestCase
     public function test_it_should_not_decrement_wallet_when_email_fails()
     {
         Mail::fake();
-        Mail::shouldReceive('send')->andReturn('demo');
-        $job = new SendCandidateContactJob($this->candidate, $this->company);
+        Mail::shouldReceive('send')->andReturn('test');
+        $job = new CandidateContactJob($this->candidate, $this->company);
         $job->handle();
         $this->company->refresh();
         $this->assertEquals(20, $this->company->coins);

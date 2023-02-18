@@ -6,7 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class ContactCandidateMail extends Mailable
+class CandidateHireMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -28,7 +28,7 @@ class ContactCandidateMail extends Mailable
     public function build()
     {
         return $this->from('test@mails.app.test.com', 'test')
-            ->subject('One company wants to hire you !!')
-            ->view('mails.candidates.contact_candidate');
+            ->subject('You are hired !!')
+            ->view('mails.candidates.hire_candidate');
     }
 }
