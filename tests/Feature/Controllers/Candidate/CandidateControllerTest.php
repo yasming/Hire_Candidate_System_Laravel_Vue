@@ -71,6 +71,6 @@ class CandidateControllerTest extends TestCase
         });
         $this->company->refresh();
         $this->assertEquals($this->companyCoins - 5, $this->company->coins);
-        $this->assertEquals(['message' => 'Email contact sent to the candidate'], $response->json());
+        $this->assertEquals(['message' => 'Email contact will be sent to the candidate'], $response->json());
     }
 }

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 class Company extends Model
 {
     use HasFactory;
+
     protected $appends = ['coins'];
 
     public function wallet()

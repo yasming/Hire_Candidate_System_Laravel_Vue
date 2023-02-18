@@ -25,7 +25,6 @@ class SendCandidateContactJob implements ShouldQueue
      */
     public function __construct(private Candidate $candidate, private Company $company)
     {
-        //
     }
 
     /**
@@ -44,6 +43,5 @@ class SendCandidateContactJob implements ShouldQueue
         } catch (\Exception $e) {
             Log::info('Send email job failed: '. $e->getMessage());
         }
-
     }
 }
