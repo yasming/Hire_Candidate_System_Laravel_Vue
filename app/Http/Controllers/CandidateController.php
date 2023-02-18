@@ -9,6 +9,7 @@ use App\Http\Requests\Candidate\HireCandidateRequest;
 use App\Models\Candidate;
 use App\Models\Company;
 use Exception;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 

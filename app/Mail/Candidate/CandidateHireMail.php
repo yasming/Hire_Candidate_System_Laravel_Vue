@@ -27,7 +27,7 @@ class CandidateHireMail extends Mailable
      */
     public function build()
     {
-        return $this->from('test@mails.app.test.com', 'test')
+        return $this->from(config('mail.from.address'), config('mail.from.name'))
             ->subject('You are hired !!')
             ->view('mails.candidates.hire_candidate');
     }

@@ -1,8 +1,11 @@
 <template>
     <div>
   <div class="p-10">
-  <h1 class="text-4xl font-bold">Candidates</h1>
-        </div>
+    <h1 class="text-4xl font-bold">Candidates</h1>
+    <div class="p-4 mt-5" :class="{ 'bg-red-100 border-l-4 border-red-500 text-red-700': errorMessage, 'bg-green-100 border-l-4 border-green-500 text-green-700': successMessage }" role="alert" v-if="successMessage || errorMessage">
+      <p class="font-bold">{{ this.successMessage || this.errorMessage}}</p>
+    </div>
+  </div>
         <div class="p-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-5">
  <div v-for="candidate in candidates" class="rounded overflow-hidden shadow-lg">
       <img class="w-full" src="/avatar.png" alt="">
@@ -22,24 +25,30 @@
 <script>
 export default {
     props:['candidates', 'companyId'],
+    data() {
+      return {
+        successMessage: '',
+        errorMessage: '',
+      }
+    },
     methods: {
       contactCandidate: function (candidateId) {
         console.log(this.candidates)
         axios.post("/candidates-contact", {candidateId, companyId: this.companyId})
             .then((res) => {
-              console.log(res.data)
+              this.successMessage = res.data.message
             })
             .catch((error) => {
-              console.log(error.response.data.message);
+              this.errorMessage = error.response.data.message
             });
       },
       hireCandidate: function (candidateId) {
         axios.post("/candidates-hire", {candidateId, companyId: this.companyId})
             .then((res) => {
-              console.log(res.data)
+              this.successMessage = res.data.message
             })
             .catch((error) => {
-              console.log(error.response.data.message);
+              this.errorMessage = error.response.data.message
             });
       }
     }

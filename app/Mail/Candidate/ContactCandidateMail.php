@@ -27,7 +27,7 @@ class ContactCandidateMail extends Mailable
      */
     public function build()
     {
-        return $this->from('test@mails.app.test.com', 'test')
+        return $this->from(config('mail.from.address'), config('mail.from.name'))
             ->subject('One company wants to hire you !!')
             ->view('mails.candidates.contact_candidate');
     }
