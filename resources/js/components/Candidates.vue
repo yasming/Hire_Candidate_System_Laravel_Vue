@@ -21,16 +21,15 @@
 
 <script>
 export default {
-    props:['candidates'],
+    props:['candidates', 'companyId'],
     methods: {
       contactCandidate: function (candidateId) {
-        console.log(candidateId);
-        axios.post("/candidates-contact", {candidateId})
+        axios.post("/candidates-contact", {candidateId, companyId: this.companyId})
             .then((res) => {
               console.log(res.data)
             })
             .catch((error) => {
-              console.log(error);
+              console.log(error.response.data.message);
             });
       }
     }
