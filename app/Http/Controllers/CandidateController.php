@@ -14,11 +14,12 @@ use Symfony\Component\HttpFoundation\Response as HttpResponse;
 
 class CandidateController extends Controller
 {
-    public function index(){
-        $candidates = Candidate::all();
+    public function index()
+    {
         $company = Company::find(1);
         $coins = $company->coins;
         $companyId = $company->id;
+        $candidates = Candidate::getNotHiredCandidatesForSpecificCompany($companyId);
         return view('candidates.index', compact('candidates', 'coins', 'companyId'));
     }
 

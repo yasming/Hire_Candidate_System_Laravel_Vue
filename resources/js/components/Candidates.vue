@@ -24,6 +24,7 @@ export default {
     props:['candidates', 'companyId'],
     methods: {
       contactCandidate: function (candidateId) {
+        console.log(this.candidates)
         axios.post("/candidates-contact", {candidateId, companyId: this.companyId})
             .then((res) => {
               console.log(res.data)
