@@ -48,7 +48,3 @@ yarn dev
 ```
 
 2. Now just go have fun hiring some candidates
-
-## Interface
-
-![](public/Screen Shot 2023-02-18 at 15.35.42.png)
